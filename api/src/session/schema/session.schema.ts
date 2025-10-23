@@ -16,6 +16,8 @@ export class Session {
 
   @Prop([{ type: Types.ObjectId, ref: 'GeneratedText' }])
   generatedTexts: Types.ObjectId[];
+
+  
 }
 
 export const SessionSchema = SchemaFactory.createForClass(Session);

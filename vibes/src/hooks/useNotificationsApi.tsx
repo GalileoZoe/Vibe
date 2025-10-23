@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 export interface Notification {
@@ -16,7 +16,7 @@ export const useNotificationsApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
       const res = await axios.get(API_URL);
@@ -26,12 +26,12 @@ export const useNotificationsApi = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const createNotification = async (notification: Notification) => {
     try {
       const res = await axios.post(API_URL, notification);
-      setNotifications((prev) => [...prev, res.data]);
+      setNotifications((prev) => [res.data, ...prev]); // Se agrega arriba, como las nuevas
     } catch (err) {
       setError("Error creating notification");
     }
@@ -50,7 +50,7 @@ export const useNotificationsApi = () => {
 
   useEffect(() => {
     fetchNotifications();
-  }, []);
+  }, [fetchNotifications]);
 
-  return { notifications, loading, error, createNotification, markAsRead };
+  return { notifications, loading, error, fetchNotifications, createNotification, markAsRead };
 };

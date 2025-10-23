@@ -6,4 +6,6 @@ export class CreateNotification {
   message: string;
   read?: boolean;
   scheduledAt?: Date;
+  expoPushToken?: string;
+
 }

@@ -5,8 +5,8 @@ import { Chat } from '../screens/Chat';
 import { Settings } from '../screens/Settings';
 import { Notifications } from '../screens/Notifications';
 import { Profile } from '../screens/Profile';
-import { Drawer } from './Drawer';
 import { Users } from '../screens/Users';
+import { Login } from '../screens/Login/Login';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,8 +35,11 @@ export const Tabs: React.FC = () => (
               case 'Settings':
                 iconName = 'settings';
                 break;
+              case 'Login':
+                iconName = 'menu';
+                break;
               case 'Drawer':
-                iconName = 'code';
+                iconName = 'menu';
                 break;
             }
 
@@ -44,11 +47,12 @@ export const Tabs: React.FC = () => (
           },
         })}
       >
-        <Tab.Screen name="Notifications" component={Notifications} />
         <Tab.Screen name="Chat" component={Chat} />
         <Tab.Screen name="Users" component={Users} />
         <Tab.Screen name="Settings" component={Settings} />
-        <Tab.Screen name="Drawer" component={Drawer} />
+        <Tab.Screen name="Notifications" component={Notifications} />
+        <Tab.Screen name="Login" component={Login} />
+
       </Tab.Navigator>
 );
 

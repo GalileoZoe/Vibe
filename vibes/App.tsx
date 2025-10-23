@@ -1,21 +1,29 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import { Settings } from './src/components/screens/Settings';
-import { Chat } from './src/components/screens/Chat';
-import { Notifications } from './src/components/screens/Notifications';
-import { Profile } from './src/components/screens/Profile';
-import { Drawer } from './src/components/layout/DrawerMenu';
 import { Tabs } from './src/components/layout/Tabs';
+import { AuthProvider } from './src/context/AuthContext';
+import { FeedProvider } from './src/context/FeedContext';
+import { SessionProvider } from './src/context/Session';
+import { ThemeProvider } from './src/context/ThemeContext';
 
-const Tab = createBottomTabNavigator();
-
-export default function App() {
+const App = () => {
   return (
-    <NavigationContainer>
-
-      <Tabs/>
-    </NavigationContainer>
+    <AuthProvider>
+      <SessionProvider>
+        {/* <IdProvider> */}
+          <ThemeProvider>
+            {/* <CartProvider> */}
+              <FeedProvider>
+                <NavigationContainer>
+                  <Tabs />
+                </NavigationContainer>
+              </FeedProvider>
+            {/* </CartProvider> */}
+          </ThemeProvider>
+        {/* </IdProvider> */}
+      </SessionProvider>
+    </AuthProvider>
   );
-}
+};
+
+export default App;

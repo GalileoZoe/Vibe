@@ -27,7 +27,11 @@ export class User {
   bio: string;
 
   @Prop({ type: Object })
-  preferences: object; // dailyReminders, preferredCategories, theme, etc.
+  preferences: object;
+
+  @Prop()
+  expoPushToken: string;
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

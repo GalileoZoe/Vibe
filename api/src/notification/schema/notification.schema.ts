@@ -19,6 +19,10 @@ export class Notification {
 
   @Prop()
   scheduledAt: Date; // si es para recordatorio futuro
+
+  @Prop()
+  expoPushToken?: string;
+
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);

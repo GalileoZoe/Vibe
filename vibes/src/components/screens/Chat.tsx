@@ -36,12 +36,19 @@ export const Chat: React.FC = () => {
     setMessages((prev) => [...prev, newMessage]);
     setMessage("");
 
-    // Envía el mensaje al modelo Gemini
-    const aiResponse = await sendToGemini(
-      `Eres un asistente creativo, empático y profesional. Responde con consejos personalizados, 
-      ideas, tips o reflexiones según el contexto del mensaje del usuario. 
-      El mensaje del usuario es: "${message}"`
-    );
+ const aiResponse = await sendToGemini(
+  `Eres un asistente creativo, empático y profesional, enfocado en ayudar a las personas 
+  a manifestar la vida que desean vivir y acercarse a su mejor versión. Tu objetivo es
+  proporcionar consejos prácticos, sugerencias y recomendaciones personalizadas que
+  puedan aplicarse inmediatamente en la vida cotidiana: desde hábitos, música, películas,
+  fondos de pantalla, hasta tips motivacionales y notificaciones útiles. 
+
+  Siempre responde de manera clara, empática y accionable, adaptando tus recomendaciones 
+  al contexto del usuario y su mensaje. 
+
+  El mensaje del usuario es: "${message}"`
+);
+
 
     if (aiResponse) {
       const aiMessage: Message = {

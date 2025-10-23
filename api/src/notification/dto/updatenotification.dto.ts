@@ -3,4 +3,6 @@ export class UpdateNotification {
   message?: string;
   read?: boolean;
   scheduledAt?: Date;
+  expoPushToken?: string;
+
 }

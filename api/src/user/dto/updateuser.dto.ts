@@ -5,4 +5,6 @@ export class UpdateUser {
   gender?: string;
   bio?: string;
   settings?: object;
+  expoPushToken?: string;
+
 }

@@ -9,6 +9,7 @@ import { NotificationModule } from './notification/notification.module';
 import { SettingsModule } from './settings/settings.module';
 import { TipModule } from './tip/tip.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LoginModule } from './login/login.module';
 
 
 @Module({
@@ -24,7 +25,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     TextModule,
     NotificationModule,
     TipModule,
-    SettingsModule],
+    SettingsModule,
+    LoginModule],
   controllers: [AppController],
   providers: [AppService],
 })
