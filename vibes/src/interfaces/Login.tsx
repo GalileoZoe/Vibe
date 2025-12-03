@@ -1,10 +1,12 @@
 export interface LoginResponse {
-    _id: string; 
-    photo: string;   
-    email: string;             
-    username: string;         
+    id_user: number | string;
+    photo: string;
+    username: string;        
     password: string;         
-    rol: string;           
-    update: string; 
+    image: string;         
+    email: string;          
+    rol: string;          
+    update: Date | string;   
 }
 
+export type RequestLogin = LoginResponse | null; 

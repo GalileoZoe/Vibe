@@ -14,7 +14,20 @@ async function bootstrap() {
 
   // Habilitar CORS para permitir solicitudes desde múltiples orígenes
   app.enableCors({
-    origin: ['http://127.0.0.1:3000','http://localhost:3001', 'http://localhost:19006','http://192.168.100.4:8081', 'http://172.21.176.1:19006', 'http://192.168.1.82:19006', 'http://192.168.100.12:19006', 'http://187.190.186.217:3000', 'http://187.190.186.217:19006', 'http://www.articulosmxapi.com:3000', 'http://articulosmxapi.com:3000', 'http://www.articulosmxapi.com:19006','http://articulosmxapi.com:19006' ],  // Agrega todos los dominios necesarios
+    origin: ['http://127.0.0.1:3000',
+      'http://localhost:3001', 
+      'exp://192.168.100.9:8081', 
+      'http://localhost:19006',
+      'http://192.168.100.4:8081',
+       'http://172.21.176.1:19006', 
+       'http://192.168.1.82:19006', 
+       'http://192.168.100.7:19006', 
+       'http://187.190.186.217:3000',
+        'http://187.190.186.217:19006', 
+        'http://www.articulosmxapi.com:3000', 
+        'http://articulosmxapi.com:3000', 
+        'http://www.articulosmxapi.com:19006',
+        'http://articulosmxapi.com:19006' ],  // Agrega todos los dominios necesarios
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,  // Si necesitas permitir el envío de cookies
   });

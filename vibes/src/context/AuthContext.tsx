@@ -1,40 +1,34 @@
-import React, { createContext, useReducer, useEffect, ReactNode } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Input } from "../hooks/useFormHookContext";
-import { AuthReducer } from "./AuthReducer";
+// src/context/AuthContext.tsx
+import React, { createContext, useReducer, ReactNode, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthReducer } from './AuthReducer';
+import { Input } from '../hooks/useFormHookContext';
 
 export interface AuthState {
     isLoggedIn: boolean;
-    _id: string | undefined;
-    favoriteImage?: string | undefined;
-    username?: string | undefined;
-    email?: string | undefined;
-    password?: string | undefined;
-    rol?: string | undefined;
+    username?: string;
+    favoriteImage?: string;
+    rol?: string;
+    email?: string;
     formData: Input[];
 }
 
 export const AuthInicialState: AuthState = {
     isLoggedIn: false,
-    _id: undefined,
-    favoriteImage: undefined,
     username: undefined,
-    email: undefined,
-    password: undefined,
+    favoriteImage: undefined,
     rol: undefined,
+    email: undefined,
     formData: [],
 };
 
 export interface AuthContextProps {
     authState: AuthState;
-    signIn: () => void;
-    changeId: (Id: string) => void;
-    changeFavImage: (sourceImage: string) => void;
+    signIn: (rol?: string, email?: string) => void;
     changeUserName: (userName: string) => void;
-    changeEmail: (Email: string) => void;
-    changeRol: (Rol: string) => void;
     logout: () => void;
-    formData: (data: Input[]) => void;
+    changeFavImage: (sourceImage: string) => void;
+    setFormData: (data: Input[]) => void;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -42,33 +36,57 @@ export const AuthContext = createContext({} as AuthContextProps);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [authState, dispatch] = useReducer(AuthReducer, AuthInicialState);
 
-    // Cargar estado desde AsyncStorage al iniciar
+    // Cargar estado al iniciar
     useEffect(() => {
-        const loadState = async () => {
-            const savedState = await AsyncStorage.getItem("authState");
-            if (savedState) {
-                dispatch({ type: "loadState", payload: JSON.parse(savedState) });
+        const loadStorage = async () => {
+            try {
+                const stored = await AsyncStorage.getItem('authState');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    dispatch({ type: 'restore', payload: parsed });
+                }
+            } catch (e) {
+                console.log("Error cargando authState", e);
             }
         };
-        loadState();
+
+        loadStorage();
     }, []);
 
-    // Guardar estado en AsyncStorage cada vez que cambie
+    // Guardar cambios
     useEffect(() => {
-        AsyncStorage.setItem("authState", JSON.stringify(authState));
+        AsyncStorage.setItem('authState', JSON.stringify(authState));
     }, [authState]);
 
-    const signIn = () => dispatch({ type: 'signIn' });
-    const changeId = (Id: string) => dispatch({ type: "changeId", payload: Id });
-    const changeFavImage = (sourceImage: string) => dispatch({ type: "changeFavImage", payload: sourceImage });
-    const changeUserName = (userName: string) => dispatch({ type: "changeUserName", payload: userName });
-    const changeEmail = (Email: string) => dispatch({ type: 'changeEmail', payload: Email });
-    const changeRol = (Rol: string) => dispatch({ type: 'changeRol', payload: Rol });
-    const formData = (data: Input[]) => dispatch({ type: 'setFormData', payload: data });
-    const logout = () => dispatch({ type: "logout" });
+    const signIn = (rol?: string, email?: string) => {
+        dispatch({ type: 'signIn', payload: { rol, email } });
+    };
+
+    const logout = async () => {
+        await AsyncStorage.removeItem('authState');
+        dispatch({ type: 'logout' });
+    };
+
+    const changeFavImage = (sourceImage: string) =>
+        dispatch({ type: 'changeFavImage', payload: sourceImage });
+
+    const changeUserName = (userName: string) =>
+        dispatch({ type: 'changeUserName', payload: userName });
+
+    const setFormData = (data: Input[]) =>
+        dispatch({ type: 'setFormData', payload: data });
 
     return (
-        <AuthContext.Provider value={{ authState, signIn, changeId, changeFavImage, changeUserName, changeEmail, changeRol, formData, logout }}>
+        <AuthContext.Provider
+            value={{
+                authState,
+                signIn,
+                changeUserName,
+                logout,
+                changeFavImage,
+                setFormData,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

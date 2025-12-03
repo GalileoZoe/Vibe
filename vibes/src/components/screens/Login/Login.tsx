@@ -1,136 +1,145 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
-import { useLogin } from '../../../hooks/useLogin';
-import { useTheme } from '../../../context/ThemeContext';
-import { useFeed } from '../../../context/FeedContext';
-import { styles } from '../../../styles/Styles';
+import React, { useContext, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Modal,
+} from "react-native";
+import { useLogin } from "../../../hooks/useLogin";
+import { useTheme } from "../../../context/ThemeContext";
+import { styles } from "../../../styles/Styles";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../../routes/routes";
+import { AuthContext } from "../../../context/AuthContext";
+
+
+type LoginScreenProp = NativeStackNavigationProp<RootStackParamList, "Login">;
 
 export const Login: React.FC = () => {
-    const { theme } = useTheme();
-    const { changeFeed } = useFeed();
-    const { loading, state, handleInputChange, handleLogin, request } = useLogin();
+  const { theme } = useTheme();
+  const { loading, state, handleInputChange, handleLogin, request, error } = useLogin();
+  const navigation = useNavigation<LoginScreenProp>();
+  const [modalVisible, setModalVisible] = useState(false);
+  const { logout, authState } = useContext(AuthContext);
 
-    const [modalVisible, setModalVisible] = useState(false);
+  console.log("Auth State in Login:", authState);
 
-    // Controla el modal basado en el estado de carga
-    React.useEffect(() => {
-        if (loading) {
-            setModalVisible(true);
-        } else {
-            setModalVisible(false);
-        }
-    }, [loading]);
+React.useEffect(() => {
+  // Si ya está loggeado, navegamos automáticamente a MainTabs
+  if (request) {
+    setModalVisible(true);
+    const timer = setTimeout(() => {
+      setModalVisible(false);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainTabs' }],
+      });
+    }, 1500);
 
-    return (
-        <View style={theme === 0 ? styles.container : styles.containerblue}>
-            <View></View>
-            <View style={styles.item}>
-                <Text style={[styles.title, { marginTop: -60 }]}>ZORO</Text>
+    return () => clearTimeout(timer);
+  }
+}, [request]);
+
+  return (
+    <View style={theme === 0 ? styles.container : styles.containerblue}>
+      <View style={styles.item}>
+        <Text style={[styles.title, { marginTop: -60 }]}>VIBES</Text>
+      </View>
+
+      <Text style={styles.titlewhite}>Iniciar Sesión</Text>
+      <Text style={styles.buttontext}>Inicia Sesión</Text>
+
+      <View style={styles.form}>
+        <TextInput
+          style={styles.inputblacklogin}
+          value={state.email}
+          onChangeText={(value) => handleInputChange("email", value)}
+          placeholder="Correo Electrónico"
+          placeholderTextColor={theme === 0 ? "black" : "white"}
+          keyboardType="email-address"
+          editable={!loading}
+        />
+        <Ionicons name="mail" size={20} color="white" style={{ marginRight: 280 }} />
+        <Text style={[styles.buttontext, { bottom: 18, marginRight: 120 }]}>
+          Correo Electrónico
+        </Text>
+
+        <TextInput
+          style={styles.inputblacklogin}
+          value={state.password}
+          onChangeText={(value) => handleInputChange("password", value)}
+          placeholder="Contraseña"
+          placeholderTextColor={theme === 0 ? "black" : "white"}
+          secureTextEntry
+          editable={!loading}
+        />
+        <Ionicons name="key" size={20} color="white" style={{ marginRight: 280 }} />
+        <Text style={[styles.buttontext, { bottom: 20, marginRight: 100 }]}>
+          Recuperar Contraseña
+        </Text>
+
+        {loading ? (
+          <ActivityIndicator style={styles.loading} size={50} color="white" />
+        ) : (
+          <View style={{ width: 600, alignContent: "center", alignItems: "center" }}>
+            <TouchableOpacity
+              style={[styles.buttonwhite]}
+           onPress={() => {
+  handleLogin();
+}}
+              disabled={loading}
+            >
+              <Text style={theme === 0 ? styles.buttontextblack : styles.buttontextblue}>
+                Iniciar Sesión
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={styles.buttontext}>o</Text>
+
+            <TouchableOpacity
+              style={[styles.buttonwhite]}
+              onPress={() => navigation.navigate("Register" as never)}
+            >
+              <Text style={theme === 0 ? styles.buttontextblack : styles.buttontextblue}>
+                Registrarme
+              </Text>
+            </TouchableOpacity>
+            
+          </View>
+        )}
+      </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalAlert}>
+            <Text style={styles.modalTitle}>
+              {error ? "Error en Inicio de Sesión" : "Inicio de Sesión Exitoso"}
+            </Text>
+            <Text style={styles.modalMessage}>
+              {error
+                ? error
+                : "Iniciando Sesión ..."}
+            </Text>
+            <View style={styles.filterRow}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Cerrar</Text>
+              </TouchableOpacity>
             </View>
-
-            <Text style={styles.buttontext}>Iniciar Sesión</Text>
-
-            <View style={styles.form}>
-                <TextInput
-                    style={styles.inputredlogin}
-                    value={state.email}
-                    onChangeText={(value) => handleInputChange('email', value)}
-                    placeholder="Correo Electrónico"
-                    placeholderTextColor={theme === 0 ? '#cf111f' : '#3b82f6'}
-                    keyboardType="email-address"
-                    editable={!loading}
-                />
-
-                <TextInput
-                    style={styles.inputredlogin}
-                    value={state.password}
-                    onChangeText={(value) => handleInputChange('password', value)}
-                    placeholder="Contraseña"
-                    placeholderTextColor={theme === 0 ? '#cf111f' : '#3b82f6'}
-                    secureTextEntry
-                    editable={!loading}
-                />
-
-                {loading ? (
-                    <ActivityIndicator style={styles.loading} size={50} color="white" />
-                ) : (
-                    <View style={{ width: 600, alignContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity
-                            style={[styles.buttonwhite, { marginVertical: 40 }]}
-                            onPress={handleLogin}
-                            disabled={loading}
-                        >
-                            <Text style={theme === 0 ? styles.buttontextred : styles.buttontextblue}>Iniciar Sesión</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.buttonwhite, { marginVertical: 60 }]}
-                            onPress={() => changeFeed(27)}
-                        >
-                            <Text style={theme === 0 ? styles.buttontextred : styles.buttontextblue}>Registrarme</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            </View>
-
-
-            {!request? (
-                <>
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => setModalVisible(false)}
-                    >
-                        <View style={styles.modalOverlay}>
-                            <View style={styles.modalAlert}>
-
-                                <Text style={styles.modalTitle}>Inicio de Sesión Exitoso</Text>
-                                <Text style={styles.modalMessage}>
-                                    Iniciando Sesión ...
-                                </Text>
-                                <View style={styles.filterRow}>
-                                    <TouchableOpacity
-                                        style={styles.modalButton}
-                                        onPress={() => setModalVisible(false)}
-                                    >
-                                        <Text style={styles.modalButtonText}>Cerrar</Text>
-                                    </TouchableOpacity>
-                                </View>
-
-
-                            </View>
-                        </View>
-                    </Modal>
-                </>):(
-<>
-<Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => setModalVisible(false)}
-                    >
-                        <View style={styles.modalOverlay}>
-                            <View style={styles.modalAlert}>
-
-                                <Text style={styles.modalTitle}>Contraseña Incorrecta</Text>
-                                <Text style={styles.modalMessage}>
-                                    Contraseña incorrecta o datos faltantes.{'\n'} Revisa tu información e intenta nuevamente.
-                                </Text>
-                                <View style={styles.filterRow}>
-                                    <TouchableOpacity
-                                        style={styles.modalButton}
-                                        onPress={() => setModalVisible(false)}
-                                    >
-                                        <Text style={styles.modalButtonText}>Cerrar</Text>
-                                    </TouchableOpacity>
-                                </View>
-
-
-                            </View>
-                        </View>
-                    </Modal>
-</>
-            )}
+          </View>
         </View>
-    );
+      </Modal>
+    </View>
+  );
 };

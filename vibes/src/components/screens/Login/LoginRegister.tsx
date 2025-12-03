@@ -1,185 +1,126 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, Image, ActivityIndicator } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
-import * as FileSystem from 'expo-file-system';
-import { useTheme } from '../../../context/ThemeContext';
-import { useFeed } from '../../../context/FeedContext';
-import { useSession } from '../../../context/Session';
-import { useLoginRegister } from '../../../hooks/useLoginRegister';
-import { styles } from '../../../styles/Styles';
-import { AuthContext } from '../../../context/AuthContext';
+// src/components/mobile/LoginRegister.tsx
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import { useLogin } from "../../../hooks/useLogin";
+import { styles } from "../../../styles/Styles";
 
+export const Register: React.FC = () => {
+  const { loading, state, handleInputChange, registerLogin, request, error } =
+    useLogin();
 
+  const [generatedCode, setGeneratedCode] = useState<string | null>(null);
+  const [codeInput, setCodeInput] = useState("");
+  const [codeExpires, setCodeExpires] = useState<number | null>(null);
+  const [sending, setSending] = useState(false);
 
-export const LoginRegister: React.FC = () => {
-  const { loading, state, handleRegister, handleInputChange, request } = useLoginRegister();
-  const [photo, setPhoto] = useState<string | null>(null);
-  const { feed, changeFeed } = useFeed();
-  const { theme, changeTheme } = useTheme();
-  const { session, changeSession } = useSession();
-  const { authState, logout } = useContext(AuthContext);
+  const generateCode = async () => {
+    if (!state.email) return Alert.alert("Error", "Escribe un correo antes de generar el código");
 
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedCode(code);
+    setCodeExpires(Date.now() + 10 * 60 * 1000); // 10 minutos
 
-  const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 0.9,
-      });
-
-      if (!result.canceled) {
-        const { uri } = result.assets[0];
-        const base64Image = await convertImageToBase64(uri);
-        setPhoto(base64Image); // Guardamos la imagen en base64
-        handleInputChange('photo', base64Image); // Guarda en el estado
-      }
-    } catch (error) {
-      console.error('Error picking image:', error);
-      Alert.alert('Error', 'Hubo un problema al seleccionar la imagen');
-    }
+    // Aquí podrías usar EmailJS o tu API para enviar el código
+    Alert.alert("Código generado", `Tu código es: ${code}`);
   };
 
-  const convertImageToBase64 = async (imageUri: string): Promise<string> => {
-    try {
-      const base64 = await FileSystem.readAsStringAsync(imageUri, {
-        encoding: 'base64',
-      });
-      return base64;
-    } catch (error) {
-      console.error('Error converting image to base64:', error);
-      return '';
-    }
+  const canRegister = () => {
+    if (!generatedCode) return false;
+    if (Date.now() > (codeExpires ?? 0)) return false;
+    return codeInput === generatedCode;
   };
 
-  const handleRegisterClick = async () => {
-    // Validación de los campos
-    if (!state.username || !state.email || !state.password || !state.email.includes('@') || !state.password) {
-      Alert.alert('Campos incompletos', 'Por favor, ingresa un email y contraseña válidos.');
-      return;
-    }
-
-    const registerData = {
-      photo: photo || '', // Si no hay foto, envía una cadena vacía
-      username: state.username,
-      email: state.email,
-      password: state.password,
-      rol: 'Usuario',
-      update:state.update
-    };
-
-    try {
-      await handleRegister(registerData);
-      Alert.alert('Éxito', 'Usuario registrado correctamente');
-    } catch (error) {
-      console.error('Error registrando el usuario:', error);
-      Alert.alert('Error', 'Hubo un error al intentar registrar el usuario.');
-    }
-  };
-
-  const handleRegisterAndNavigate = async () => {
-    try {
-      // Ejecuta la función de registro
-      await handleRegisterClick();
-      
-      // Si el registro es exitoso, cambia de pantalla
-      Alert.alert(
-        "Usuario Registrado",
-        "Ahora Puedes Iniciar Sesión",
-        [
-          {
-            text: "Cancelar",
-          },
-          {
-            text: "Aceptar",
-            onPress: () => {
-              logout();
-              changeSession(0);
-              changeFeed(1);
-            }
-          }
-        ]
-      );
-    } catch (error) {
-      console.error('Error en el registro:', error);
-    }
+  const handleRegister = () => {
+    if (!canRegister()) return Alert.alert("Error", "Código incorrecto o expirado.");
+    registerLogin();
   };
 
   return (
-    <View style={styles.containerapp}>
-    <TouchableOpacity onPress={() => changeFeed(1)}>
-      <View style={theme === 0 ? styles.headermainred : styles.headermainblue}>
-          <Text style={[styles.title]}>Crear Cuenta</Text>
-      </View>
-  </TouchableOpacity>
-  <View style={theme==0?styles.container:styles.containerblue}>
-
-  <TouchableOpacity onPress={pickImage}>
-        {photo?
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={{ alignItems: "center", marginBottom: 20 }}>
         <Image
-          source={{ uri: `data:image/jpeg;base64,${photo}` }}
-          style={{ width: 200, height: 200, borderRadius: 200, }}
-        />:
-        <FontAwesome name="user-circle" size={200} color="#ffffff" />
-      }
-  
-  </TouchableOpacity>
-      <Text style={styles.buttontext}>{state.username?state.username:'Foto'}</Text>
- <View style={styles.marginvertical}></View>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={state.username}
-        onChangeText={(text) => handleInputChange('username', text)}
-      />
-      <View style={styles.marginVertical}></View>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={state.email}
-        onChangeText={(text) => handleInputChange('email', text)}
-      />
-      <View style={styles.marginVertical}></View>
+          source={require("../../../assets/vibe.png")}
+          style={{ width: 120, height: 120, marginBottom: 8 }}
+          resizeMode="contain"
+        />
+        <Text style={styles.buttontext}>Crear Cuenta</Text>
+      </View>
+
+      <Text style={styles.titlewhite}>Crear Cuenta</Text>
+
+      {error && <Text style={[styles.texts, { color: "red" }]}>{error}</Text>}
+      {request && <Text style={[styles.texts, { color: "#0f0" }]}>¡Usuario registrado correctamente!</Text>}
 
       <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={state.password}
-        onChangeText={(text) => handleInputChange('password', text)}
+        style={styles.inputblacklogin}
+        placeholder="Nombre de Usuario"
+        value={state.username || ""}
+        onChangeText={(value) => handleInputChange("username", value)}
+        editable={!loading}
       />
-      <View style={styles.marginVertical}></View>
-
-      {/* <TextInput
-        style={styles.input}
-        placeholder="Rol"
-        value={state.rol}
-        onChangeText={(text) => handleInputChange('rol', text)}
-      /> */}
-
-      
-      <View style={styles.marginVertical}></View>
-
-  
-
-<View style={styles.marginVertical}></View>
-
-      
-        {/* <Text style={styles.buttontext}>
-          <FontAwesome name="camera" size={20} color="#ffffff" />
-        </Text> */}
-      <View style={styles.marginVertical}></View>
-
-      {loading ? (
-        <ActivityIndicator size="large" color="#fff" />
-      ) : (
-        <TouchableOpacity onPress={handleRegisterAndNavigate}>
-        <Text style={styles.buttontext}>Registrarse</Text>
+      <TextInput
+        style={styles.inputblacklogin}
+        placeholder="Correo Electrónico"
+        value={state.email || ""}
+        onChangeText={(value) => handleInputChange("email", value)}
+        keyboardType="email-address"
+        editable={!loading}
+      />
+      <TouchableOpacity
+        style={[styles.buttonwhite, { opacity: sending ? 0.6 : 1, marginVertical: 10 }]}
+        onPress={generateCode}
+        disabled={sending}
+      >
+        <Text style={styles.buttontextblack}>{sending ? "Enviando..." : "Enviar Código"}</Text>
       </TouchableOpacity>
-)}
-    </View>
-    <View style={styles.marginvertical}></View>
-    </View>
+
+      <TextInput
+        style={styles.inputblacklogin}
+        placeholder="Código de verificación"
+        value={codeInput}
+        onChangeText={setCodeInput}
+        editable={!!generatedCode}
+      />
+      {generatedCode && Date.now() > (codeExpires ?? 0) && (
+        <Text style={{ color: "red", marginBottom: 8 }}>El código expiró, genera uno nuevo.</Text>
+      )}
+
+      <TextInput
+        style={styles.inputblacklogin}
+        placeholder="Contraseña"
+        value={state.password || ""}
+        secureTextEntry
+        onChangeText={(value) => handleInputChange("password", value)}
+        editable={!loading}
+      />
+      <TextInput
+        style={styles.inputblacklogin}
+        placeholder="Rol (opcional)"
+        value={state.rol || "Usuario"}
+        onChangeText={(value) => handleInputChange("rol", value)}
+        editable={!loading}
+      />
+
+      <TouchableOpacity
+        style={[styles.buttonwhite, { opacity: loading || !canRegister() ? 0.6 : 1, marginTop: 15 }]}
+        onPress={handleRegister}
+        disabled={loading || !canRegister()}
+      >
+        {loading ? (
+          <ActivityIndicator color="black" />
+        ) : (
+          <Text style={styles.buttontextblack}>Crear Cuenta</Text>
+        )}
+      </TouchableOpacity>
+    </ScrollView>
   );
 };

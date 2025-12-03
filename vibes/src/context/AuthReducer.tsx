@@ -1,65 +1,48 @@
-// AuthReducer.tsx
-import { AuthState } from "./AuthContext";
-import { Input } from "../hooks/useFormHookContext";
+// src/context/AuthReducer.ts
+import { AuthState } from './AuthContext';
+import { Input } from '../hooks/useFormHookContext';
 
-type AuthAction = 
-    | { type: 'signIn' }
+type AuthAction =
+    | { type: 'restore'; payload: AuthState }
+    | { type: 'signIn'; payload?: { rol?: string; email?: string } }
     | { type: 'logout' }
-    | { type: 'changeId', payload: string }
-    | { type: 'changeFavImage', payload: string }
-    | { type: 'changeUserName', payload: string }
-    | { type: 'changeEmail', payload: string }
-    | { type: 'changeRol', payload: string }
-    | { type: 'loadState', payload:string}
-    | { type: 'setFormData', payload: Input[] };
+    | { type: 'changeFavImage'; payload: string }
+    | { type: 'changeUserName'; payload: string }
+    | { type: 'setFormData'; payload: Input[] };
 
-export const AuthReducer = (state: AuthState, action: any): AuthState => {
+export const AuthReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
-        case "signIn":
+        case 'restore':
+            return { ...action.payload };
+
+        case 'signIn':
             return {
                 ...state,
                 isLoggedIn: true,
-                username: "Ingresa Tu Username", // Cambiar si es necesario
+                username: state.username ?? 'no_name_user_yet',
+                rol: action.payload?.rol || 'Usuario',
+                email: action.payload?.email,
             };
-            case "changeId":
-                return {
-                    ...state,
-                    _id: action.payload,
-                };
-        case "changeFavImage":
+
+        case 'logout':
             return {
-                ...state,
-                favoriteImage: action.payload,
+                isLoggedIn: false,
+                username: undefined,
+                favoriteImage: undefined,
+                rol: undefined,
+                email: undefined,
+                formData: [],
             };
-        case "changeUserName":
-            return {
-                ...state,
-                username: action.payload,
-            };
-        case "changeEmail":
-            return {
-                ...state,
-                email: action.payload,
-            };
-        case "changeRol":
-            return {
-                ...state,
-                rol: action.payload,
-            };
-            case 'setFormData':
-                return {
-                    ...state,
-                    formData: action.payload,
-                };
-            case "logout":
-                return {
-                    ...state,
-                    isLoggedIn: false,
-                    username: undefined,
-                    favoriteImage: undefined,
-                };
-                case "loadState":
-                    return { ...state, ...action.payload };
+
+        case 'changeFavImage':
+            return { ...state, favoriteImage: action.payload };
+
+        case 'changeUserName':
+            return { ...state, username: action.payload };
+
+        case 'setFormData':
+            return { ...state, formData: action.payload };
+
         default:
             return state;
     }

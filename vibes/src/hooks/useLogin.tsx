@@ -1,94 +1,122 @@
 import { useReducer, useState, useContext } from 'react';
 import { vibeApi } from '../api/vibeApi';
+import { RequestLogin } from '../interfaces/Login';
 import { AuthContext } from '../context/AuthContext';
-import { LoginResponse } from '../interfaces/Login';
+import { API_URL } from '@env';
 
 
+export interface LoginData {
+  photo?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+  rol?: string;
+}
 
-const initialLoginData = { _id:'', photo:'', username:'', email:'', password:'', rol:'', update:'' };
+const initialLoginData: LoginData = {
+  password: '',
+  email: '',
+  username: '',
+  rol: 'Usuario',
+};
 
+type Action = {
+  type: 'handleInputChange';
+  payload: { fieldName: keyof LoginData; value: string };
+};
 
-type Action = { type: 'handleInputChange', payload: { fieldName: keyof LoginResponse, value: string } };
-
-const dataReducer = (state: LoginResponse, action: Action) => {
-    switch (action.type) {
-        case 'handleInputChange':
-            return {
-                ...state,
-                [action.payload.fieldName]: action.payload.value,
-            };
-        default:
-            return state;
-    }
+const dataReducer = (state: LoginData, action: Action): LoginData => {
+  switch (action.type) {
+    case 'handleInputChange':
+      return { ...state, [action.payload.fieldName]: action.payload.value };
+    default:
+      return state;
+  }
 };
 
 export const useLogin = () => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [request, setRequest] = useState<boolean | null>(null); // Maneja el estado de la petición
-    const [state, dispatch] = useReducer(dataReducer, initialLoginData);
-    const { signIn, changeId, changeUserName, changeFavImage, changeEmail, changeRol } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const [state, dispatch] = useReducer(dataReducer, initialLoginData);
+  const [request, setRequest] = useState<RequestLogin | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-    const handleInputChange = (fieldName: keyof LoginResponse, value: string) => {
-        dispatch({ type: 'handleInputChange', payload: { fieldName, value } });
-    };
+  const { signIn, changeUserName, changeFavImage } = useContext(AuthContext);
 
-    const handleLogin = async () => {
-        setLoading(true);
-        setRequest(null); // Reinicia el estado de la petición
-        const apiUrl = 'http://articulosmxapi.com:3000/api/zoro/v1/login/';
+  const handleInputChange = (fieldName: keyof LoginData, value: string) => {
+    dispatch({ type: 'handleInputChange', payload: { fieldName, value } });
+  };
 
-        const dataBody = {
-            email: state.email,
-            password: state.password,
-        };
+  // 🔹 LOGIN
+  const handleLogin = async () => {
+    setLoading(true);
+    setError(null);
+    setRequest(null);
 
-        try {
-            const response = await vibeApi.post<LoginResponse>(apiUrl, dataBody);
+    if (!state.email || !state.password) {
+      setError('Por favor ingresa tu correo y contraseña');
+      setLoading(false);
+      return;
+    }
 
-            if (response.data?._id) {
-                setRequest(false); // Indica que la petición fue exitosa
-                signIn();
-                changeId(response.data._id);
-                changeUserName(response.data.username);
-                changeFavImage(response.data.photo);
-                changeEmail(response.data.email);
-                changeRol(response.data.rol);
-            } else {
-                setRequest(true); // Indica que la petición falló
-            }
-        } catch (error) {
-            console.error('Error en la autenticación:', error);
-            setRequest(true); // Indica que hubo un error
-        } finally {
-            setLoading(false);
+    try {
+      const { data } = await vibeApi.post<RequestLogin>(
+        `${API_URL}/login`, // <-- usamos la variable global
+        { email: state.email, password: state.password }
+      );
+
+      if (data) {
+        signIn(data.rol === 'Administrador' ? 'Administrador' : 'Usuario', data.email);
+        changeUserName(data.username || 'Sin nombre');
+        changeFavImage(data.photo || '');
+        setRequest(data);
+      } else {
+        setError('Credenciales incorrectas');
+      }
+    } catch (err: any) {
+      console.error('Error en login:', err);
+      setError(err.response?.data?.message || 'Error de red o servidor inalcanzable');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 REGISTER
+  const registerLogin = async () => {
+    setLoading(true);
+    setError(null);
+    setRequest(null);
+
+    if (!state.username || !state.email || !state.password) {
+      setError('Todos los campos son obligatorios');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data } = await vibeApi.post<RequestLogin>(
+        `${API_URL}/login/register`, // <-- usamos la variable global
+        {
+          photo: state.photo || '',
+          username: state.username,
+          email: state.email,
+          password: state.password,
+          rol: state.rol || 'Usuario',
         }
-    };
+      );
 
-    // Nueva función para actualizar perfil
-    const handleUpdateProfile = async (userId: string) => {
-        setLoading(true);
-        setRequest(null); // Reinicia el estado de la petición
-        const apiUrl = `http://articulosmxapi.com:3000/api/zoro/v1/login/update/${userId}`;
+      if (data) {
+        signIn(data.rol === 'Administrador' ? 'Administrador' : 'Usuario', data.email);
+        changeUserName(data.username || 'Nuevo usuario');
+        changeFavImage(data.photo || '');
+        setRequest(data);
+      } else setError('No se pudo registrar el usuario');
+    } catch (err: any) {
+      console.error('Error en register:', err);
+      setError(err.response?.data?.message || 'Error de red o servidor inalcanzable');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            const response = await vibeApi.post(apiUrl, state);
-
-            if (response.status === 201) {
-                setRequest(false); // Indica que la petición fue exitosa
-                changeId(response.data._id);
-                changeUserName(response.data.username);
-                changeFavImage(response.data.photo);
-                changeEmail(response.data.email);
-            } else {
-                setRequest(false); // Indica que la petición falló
-            }
-        } catch (error) {
-            console.error('Error al actualizar el perfil:', error);
-            setRequest(false); // Indica que hubo un error
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { loading, state, request, handleLogin, handleInputChange, handleUpdateProfile };
+  return { loading, state, handleLogin, registerLogin, handleInputChange, request, error };
 };

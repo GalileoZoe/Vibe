@@ -1,10 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Chat } from '../screens/Chat';
-import { Settings } from '../screens/Settings';
-import { Notifications } from '../screens/Notifications';
-import { Profile } from '../screens/Profile';
+import { Chat } from '../screens/Chat/Chat';
+import { Settings } from '../screens/Settings/Settings';
+import { Profile } from '../screens/Profile/Profile';
+import { Notifications } from '../screens/Notifications/Notifications';
 
 const Drawer = createBottomTabNavigator();
 

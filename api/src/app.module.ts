@@ -10,6 +10,7 @@ import { SettingsModule } from './settings/settings.module';
 import { TipModule } from './tip/tip.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LoginModule } from './login/login.module';
+// import { DeviceModule } from './device/device.module';
 
 
 @Module({
@@ -26,7 +27,8 @@ import { LoginModule } from './login/login.module';
     NotificationModule,
     TipModule,
     SettingsModule,
-    LoginModule],
+    LoginModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,11 +1,24 @@
-// import React from 'react';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { Drawer } from './Menu';
+// components/Layout/Layout.tsx
+import React, { useContext } from "react";
+import { View, StyleSheet } from "react-native";
+import { AuthContext } from "../../context/AuthContext";
+import { AuthStack } from "../../navigation/AuthStack";
+import { RootNavigator } from "../../navigation/RootNavigator";
 
-// const Layout: React.FC = () => (
-//   <NavigationContainer>
-//     <Drawer />
-//   </NavigationContainer>
-// );
+export const Layout = () => {
+  const { authState } = useContext(AuthContext);
 
-// export default Layout;
+  return (
+    <View style={styles.container}>
+      {authState.isLoggedIn ? (
+        <RootNavigator />
+      ) : (
+        <AuthStack />
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+});

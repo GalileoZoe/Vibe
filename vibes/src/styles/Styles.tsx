@@ -1,25 +1,28 @@
 
 import { StyleSheet } from "react-native";
 
+const secondary ='#111';
+const primary='#fafafa';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#d32f2f',
+    backgroundColor: secondary,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 50,
   },
-  containerred: {
+  containerblack: {
     flex: 1,
-    backgroundColor: '#cf111f',
+    backgroundColor: secondary,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 50,
   },
+
   containerblue: {
     flex: 1,
-    backgroundColor: '#3b82f6', 
+    backgroundColor:"black",
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 50,
@@ -36,15 +39,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 50,
   },
-  title: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 10,
-    textShadowColor: '#000',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 5,
-  },
+
   titles: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -52,11 +47,19 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
 
   },
-  titlered: {
-    fontSize: 48,
+  title: {
+    fontSize: 25,
     fontWeight: 'bold',
-    color: '#cf111f',
-  },
+    color: secondary,
+  fontFamily: 'System',
+},
+  titlewhite: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: primary,
+  fontFamily: 'System',
+},
+
   subtitle: {
     fontSize: 24,
     color: '#fff',
@@ -98,16 +101,18 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   button: {
-    backgroundColor: '#cf111f', 
+    backgroundColor: secondary, 
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 50,
     marginBottom: 10,
-    width: 80,
+    minWidth: 150,
+    width:'70%',
     alignItems: 'center',
+    color:'#fafafa'
 
   },
   buttonblue: {
-    backgroundColor: '#3b82f6', 
+    backgroundColor: primary, 
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
@@ -117,11 +122,11 @@ export const styles = StyleSheet.create({
 
   },
   buttonwhite: {
-    backgroundColor:'whitesmoke', // Darker red for buttons
+    backgroundColor:'whitesmoke', // Darker black for buttons
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    width: '70%',
+    borderRadius: 50,
+    marginVertical:20,
+    width: '50%',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 10, height: 10 },
@@ -135,27 +140,33 @@ export const styles = StyleSheet.create({
   },
   buttontext: {
     color: 'whitesmoke',
-    fontSize: 10,
-    fontWeight: 'bold',
+    fontSize: 15,
   },
   buttontexts: {
     color: '#fff',
     fontSize: 8,
     fontWeight: 'bold', 
   },
-  buttontextred: {
-    color: '#cf111f',
+  buttontextblack: {
+    color: secondary,
     fontSize: 18,
   },
   buttontextblue: {
-    color: '#3b82f6',
+    color: primary,
     fontSize: 15,
     fontWeight:'600',
     textAlign: 'center',
  
   },
+  // buttontextblack: {
+  //   color: '#000',
+  //   fontSize: 15,
+  //   fontWeight:'600',
+  //   textAlign: 'center',
+ 
+  // },
   registerButton: {
-    backgroundColor: '#d32f2f', // Regular red for register button
+    backgroundColor: '#d32f2f', // Regular black for register button
   },
 
   iconContainer: {
@@ -220,34 +231,34 @@ export const styles = StyleSheet.create({
     height: 100,
     resizeMode: 'contain',
   },
-  iconred: {
+  iconblack: {
     fontSize: 40,
     fontWeight: '100',
-    color: '#cf111f',
+    color: secondary,
     alignItems: 'center',
     marginVertical: 15,
   },
   iconblue: {
     fontSize: 40,
     fontWeight: '100',
-    color: '#3b82f6',
+    color: primary,
     alignItems: 'center',
     marginVertical: 15,
   },
   icon: {
     fontSize: 40,
     fontWeight: '100',
-    color: '#cf111f',
+    color: secondary,
     alignItems: 'center',
     marginVertical: 15,
   },
   text: {
-    color: '#db1313',
+    color: secondary,
     textAlign: 'center',
     marginBottom: 15,
   },
   texts: {
-    color: '#db1313',
+    color: secondary,
     textAlign: 'center',
     marginBottom: 10,
   },
@@ -255,7 +266,7 @@ export const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  inputredlogin: {
+  inputblacklogin: {
     width: '90%',
     padding: 10,
     marginVertical: 10,
@@ -275,15 +286,15 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonmain: {
-    backgroundColor: '#cf111f', // Color de fondo rojo
+    backgroundColor: secondary, // Color de fondo rojo
     borderRadius: 10,
     margin: 10,
     padding: 40,
     alignItems: 'center',
     width: '180%', // Ancho del botón
   },
-  buttonmainred: {
-    backgroundColor: '#cf111f', // Color de fondo rojo
+  buttonmainblack: {
+    backgroundColor: secondary, // Color de fondo rojo
     borderRadius: 10,
     margin: 10,
     padding: 40,
@@ -291,15 +302,15 @@ export const styles = StyleSheet.create({
     width: 180, // Ancho del botón
   },
   buttonmainblue: {
-    backgroundColor: '#3b82f6', // Color de fondo rojo
+    backgroundColor: primary, // Color de fondo rojo
     borderRadius: 10,
     margin: 10,
     padding: 40,
     alignItems: 'center',
     width: '40%', // Ancho del botón
   },
-  buttonlistred: {
-    backgroundColor: '#cf111f', // Color de fondo rojo
+  buttonlistblack: {
+    backgroundColor: secondary, // Color de fondo rojo
     borderRadius: 10,
     margin: 10,
     padding: 40,
@@ -322,19 +333,19 @@ export const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   headermain: {
-    backgroundColor: '#cf111f',
+    backgroundColor: secondary,
     width: '100%',
     paddingTop: 20,
     alignItems: 'center',
   },
-  headermainred: {
-    backgroundColor: '#cf111f',
+  headermainblack: {
+    backgroundColor: secondary,
     width: '100%',
     paddingTop: 20,
     alignItems: 'center',
   },
   headermainblue: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: primary,
     width: '100%',
     paddingTop: 20,
     alignItems: 'center',
@@ -345,7 +356,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titleredmain: {
+  titleblackmain: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
@@ -368,7 +379,7 @@ export const styles = StyleSheet.create({
   card: {
     margin: 10,
     borderRadius: 10,
-    overflow: 'hidden', // Asegura que el fondo respete los bordes redondeados
+    overflow: 'hidden', // Asegura que el fondo respete los bordes blackondeados
     elevation: 3, // Sombra para Android
     backgroundColor: '#fff',
     shadowColor: '#000', // Sombra para iOS
@@ -380,7 +391,7 @@ export const styles = StyleSheet.create({
   cardcart: {
     margin: 10,
     borderRadius: 10,
-    overflow: 'hidden', // Asegura que el fondo respete los bordes redondeados
+    overflow: 'hidden', // Asegura que el fondo respete los bordes blackondeados
     elevation: 3, // Sombra para Android
     backgroundColor: '#fff',
     shadowColor: '#000', // Sombra para iOS
@@ -392,7 +403,7 @@ export const styles = StyleSheet.create({
   cardblue: {
     margin: 10,
     borderRadius: 10,
-    overflow: 'hidden', // Asegura que el fondo respete los bordes redondeados
+    overflow: 'hidden', // Asegura que el fondo respete los bordes blackondeados
     elevation: 3, // Sombra para Android
     backgroundColor:'rgba(57, 117, 230, 0.38)',
     shadowColor: '#000', // Sombra para iOS
@@ -410,16 +421,16 @@ export const styles = StyleSheet.create({
     backgroundColor: '#E8F5E9',
     justifyContent: 'space-between',
   },
-  cardred: {
-    flex: 1,
-    margin: 8,
-    padding: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#db1313',
-    backgroundColor: '#FFF0F5',
-    justifyContent: 'space-between',
-  },
+  // cardblack: {
+  //   flex: 1,
+  //   margin: 8,
+  //   padding: 16,
+  //   borderRadius: 8,
+  //   borderWidth: 1,
+  //   borderColor: secondary,
+  //   backgroundColor: '#FFF0F5',
+  //   justifyContent: 'space-between',
+  // },
   lightCard: {
     backgroundColor: '#fff',
   },
@@ -430,7 +441,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#db1313',
+    backgroundColor: secondary,
   },
   cardHeaderGreen: {
     flexDirection: 'row',
@@ -481,7 +492,7 @@ export const styles = StyleSheet.create({
   },
 
   editButton: {
-    backgroundColor: '#cf111f',
+    backgroundColor: secondary,
     padding: 10,
     borderRadius: 50,
   },
@@ -495,7 +506,7 @@ export const styles = StyleSheet.create({
     height: 150,
     borderRadius: 75,
     borderWidth: 3,
-    borderColor: '#cf111f',
+    borderColor: secondary,
     marginBottom: 20,
   },
   username: {
@@ -520,28 +531,28 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionButton: {
-    backgroundColor: '#cf111f',
+    backgroundColor: secondary,
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 25,
     marginVertical: 10,
   },
-  buttonred: {
-    backgroundColor: '#cf111f',
+  buttonblack: {
+    backgroundColor: secondary,
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 12,
     marginVertical: 10,
     padding:10,
   },
-  buttonreds: {
-    backgroundColor: '#cf111f',
+  buttonblacks: {
+    backgroundColor: secondary,
     borderRadius: 200,
     marginVertical: 10,
     padding: 10
   },
   buttonblues: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: primary,
     borderRadius: 200,
     marginVertical: 10,
     padding: 10
@@ -562,7 +573,7 @@ export const styles = StyleSheet.create({
   },
   line: {
     height: 10, // Altura de la línea
-    backgroundColor: '#3b82f6' , // Color de la línea
+    backgroundColor: primary , // Color de la línea
     width: '50%', // Ancho completo
     borderRadius:20
   },
@@ -600,7 +611,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalButtonText: {
-    color: '#3b82f6',
+    color: primary,
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -631,7 +642,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
   circle:{
-    backgroundColor:'#cf111f',
+    backgroundColor:secondary,
     width:30,
     height:30,
     alignContent:'center',
@@ -673,7 +684,7 @@ export const styles = StyleSheet.create({
     top: 10,
     right: 10,
     padding: 10,
-    backgroundColor: 'red',
+    backgroundColor: 'black',
     borderRadius: 5,
   },
   closeButtonText: {
@@ -692,7 +703,7 @@ export const styles = StyleSheet.create({
     bottom:80
   },
   imageStyle: {
-    borderRadius: 10, // Redondeo de bordes en la imagen
+    borderRadius: 10, // blackondeo de bordes en la imagen
   },
   cardContent: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semitransparente para el texto
@@ -722,7 +733,7 @@ modalTitles: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#cf111f',
+    color: secondary,
 },
 modalMessage: {
     fontSize: 16,
@@ -731,7 +742,7 @@ modalMessage: {
     color: '#333',
 },
 modalButtons: {
-    backgroundColor: '#cf111f',
+    backgroundColor: secondary,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
